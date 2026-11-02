@@ -1,0 +1,32 @@
+<powershell>
+# Install IIS Web Server role and management tools
+Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+
+# Optional: Install additional IIS features, e.g., ASP.NET 4.8
+Install-WindowsFeature -Name Web-Asp-Net48
+
+# Configure default website (optional, if you want to modify the default)
+# Remove-Website -Name "Default Web Site" # Uncomment to remove default site
+# New-Website -Name "MyCustomWebsite" -PhysicalPath "C:\inetpub\wwwroot\MyWebsite" -Port 80 # Create new site
+
+# Create a simple index.html file for testing
+$htmlContent = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello from EC2 IIS</title>
+</head>
+<body>
+    <h1>IIS is running on this Windows EC2 instance!</h1>
+    <p>This page was deployed using User Data.</p>
+    <script>
+ 	document.write(window.location.hostname);
+      </script>
+</body>
+</html>
+"@
+Set-Content -Path "C:\inetpub\wwwroot\index.html" -Value $htmlContent
+
+# Start IIS service (if not already running)
+Start-Service W3SVC
+</powershell>
